@@ -1,7 +1,8 @@
-from typing import List, Any
+import asyncio
+from typing import List, Any, Dict
 from .base_agent import BaseAgent
 from ..core.config import Config
-from ..tools.browser_use_tool import BrowserUseTool
+from ..tools.browser import BrowserUseTool
 from ..tools.web_search import WebSearchTool
 
 class BrowserAgent(BaseAgent):
