@@ -1,6 +1,7 @@
 import asyncio
 from src.core.config import Config
-from src.agents.specialized_agents.researcher_agent import ResearcherAgent
+from src.agents import AgentFactory
+from src.tools import ToolFactory
 
 async def main():
     # Initialize configuration from YAML
@@ -9,8 +10,11 @@ async def main():
     # Validate configuration
     config.validate()
     
-    # Create researcher agent
-    researcher = ResearcherAgent(config)
+    # Create researcher agent using the factory
+    researcher = AgentFactory.create_agent("researcher", config=config)
+    
+    # Create web search tool
+    web_search_tool = ToolFactory.create_tool("web_search")
     
     # Define research topic
     topic = "Latest developments in AI agents and autonomous systems in 2024"
@@ -20,7 +24,7 @@ async def main():
     
     # Execute research
     try:
-        results = await researcher.research(topic)
+        results = await researcher.research(topic, tools=[web_search_tool])
         print("\nResearch Results:")
         print("-" * 50)
         print(results)

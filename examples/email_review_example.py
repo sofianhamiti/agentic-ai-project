@@ -1,13 +1,13 @@
 import asyncio
 from src.core.config import Config
-from src.agents.specialized_agents.email_reviewer_agent import EmailReviewerAgent, Email
+from src.agents import AgentFactory, Email
 
 async def main():
     # Initialize configuration
     config = Config.from_yaml()
     
-    # Create email reviewer agent
-    reviewer = EmailReviewerAgent(config)
+    # Create email reviewer agent using the factory
+    reviewer = AgentFactory.create_agent("email_reviewer", config=config)
     
     # Sample emails to review
     sample_emails = [
