@@ -3,6 +3,7 @@ import time
 import base64
 from typing import Dict, Any, Optional, List
 from crewai.tools import BaseTool
+from pydantic import Field, BaseModel
 
 try:
     from selenium import webdriver
@@ -20,6 +21,18 @@ try:
 except ImportError:
     SELENIUM_AVAILABLE = False
 
+class BrowserUseToolSchema(BaseModel):
+    """Schema for the Browser Use Tool"""
+    action: str = Field(description="The browser action to perform (visit, click, etc.)")
+    url: Optional[str] = Field(None, description="URL for navigation actions")
+    selector: Optional[str] = Field(None, description="CSS selector for finding elements")
+    text: Optional[str] = Field(None, description="Text for input actions")
+    index: Optional[int] = Field(None, description="Element index for multiple matches")
+    script: Optional[str] = Field(None, description="JavaScript code to execute")
+    scroll_amount: Optional[int] = Field(None, description="Pixels to scroll")
+    tab_id: Optional[int] = Field(None, description="Tab ID for switching tabs")
+    timeout: int = Field(10, description="Maximum wait time in seconds")
+
 class BrowserUseTool(BaseTool):
     """Tool for automating web browser interactions."""
     
@@ -35,6 +48,7 @@ Use this tool when you need to:
 - Take screenshots
 - Scroll web pages
 - Execute JavaScript"""
+    args_schema = BrowserUseToolSchema
     
     def __init__(self):
         super().__init__()
@@ -54,6 +68,7 @@ Use this tool when you need to:
                 chrome_options.add_argument("--headless")  # Run in headless mode
                 chrome_options.add_argument("--no-sandbox")
                 chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--disable-gpu")
                 
                 # Initialize the driver
                 self._driver = webdriver.Chrome(options=chrome_options)
@@ -67,37 +82,31 @@ Use this tool when you need to:
                 
                 return True
             except Exception as e:
+                # Log the specific exception for debugging
+                print(f"Error initializing Chrome WebDriver: {str(e)}")
                 return False
         
         return True
     
-    def _run(self, 
-            action: str, 
-            url: Optional[str] = None,
-            selector: Optional[str] = None,
-            text: Optional[str] = None,
-            index: Optional[int] = None,
-            script: Optional[str] = None,
-            scroll_amount: Optional[int] = None,
-            tab_id: Optional[int] = None,
-            timeout: int = 10
-        ) -> Dict[str, Any]:
+    def _run(self, action: str, url: Optional[str] = None, selector: Optional[str] = None,
+            text: Optional[str] = None, index: Optional[int] = None, script: Optional[str] = None,
+            scroll_amount: Optional[int] = None, tab_id: Optional[int] = None, timeout: int = 10) -> Dict[str, Any]:
         """
-        Execute a browser action.
+        Execute the specified browser action.
         
         Args:
-            action (str): The browser action to perform (navigate, click, input_text, etc.)
-            url (str, optional): URL for navigate or new_tab actions
-            selector (str, optional): CSS selector for finding elements
-            text (str, optional): Text for input_text action
-            index (int, optional): Element index when multiple elements match selector
-            script (str, optional): JavaScript code to execute
-            scroll_amount (int, optional): Pixels to scroll (positive for down, negative for up)
-            tab_id (int, optional): Tab ID for switch_tab action
-            timeout (int, optional): Maximum wait time in seconds for operations
+            action: The action to perform ('visit', 'click', 'input', 'extract', etc.)
+            url: URL to navigate to or interact with
+            selector: CSS selector for finding elements
+            text: Text to input into form fields
+            index: Index of element when multiple elements match the selector
+            script: JavaScript code to execute
+            scroll_amount: Amount to scroll the page (pixels)
+            tab_id: ID of the tab to switch to
+            timeout: Time to wait for operations to complete
             
         Returns:
-            Dict[str, Any]: Result of the browser action
+            Result of the browser action
         """
         # Check if Selenium is available
         if not SELENIUM_AVAILABLE:

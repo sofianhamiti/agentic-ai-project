@@ -4,10 +4,8 @@ Example demonstrating the use of the MainAgent.
 This script shows how to create and use the MainAgent for research tasks.
 """
 
-import sys
-import os
-
-# Add the src directory to the path
+# Simple path setup for local development
+import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.agents.factory import AgentFactory
@@ -38,11 +36,8 @@ def main():
     Ensure your research is thorough and accurate.
     """
     
-    # Create a task using the agent
-    task = agent.create_task(task_description)
-    
-    # Execute the task
-    result = agent.execute_task(task)
+    # Execute the task directly
+    result = agent.execute_task(task_description)
     
     # Print the result
     print("\n=== RESEARCH RESULTS ===\n")

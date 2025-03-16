@@ -21,6 +21,10 @@ class AgentFactory:
         Raises:
             ValueError: If the agent type is unknown
         """
+        # If config is None, create a new Config instance
+        if config is None:
+            config = Config()
+            
         if agent_type == "swe":
             from .swe_agent import SWEAgent
             return SWEAgent(config, verbose=verbose)

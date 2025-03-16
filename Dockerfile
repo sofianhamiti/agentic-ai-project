@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     groff \
     unzip \
     git \
+    wget \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 # Install AWS CLI v2

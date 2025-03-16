@@ -8,6 +8,7 @@ from ..tools.browser import BrowserUseTool
 from ..tools.python_executor import PythonExecutorTool
 from ..tools.file_saver import FileSaverTool
 from ..tools.terminal import TerminalTool
+import os
 
 class MainAgent(BaseAgent):
     """
@@ -39,13 +40,21 @@ class MainAgent(BaseAgent):
         
     def get_tools(self) -> List[Any]:
         """Get the comprehensive set of tools available to this agent."""
-        return ToolCollection(
+        # Create the default tools collection
+        tools = ToolCollection(
             WebSearchTool(),
-            BrowserUseTool(),
             PythonExecutorTool(),
             FileSaverTool(),
             TerminalTool()
-        ).get_all_tools()
+        )
+        
+        # Try to add the browser tool, but only if we're not in a Docker container
+        if not os.environ.get('PYTHONPATH') == '/app':  # Check if we're in Docker
+            browser_tool = BrowserUseTool()
+            if hasattr(browser_tool, '_ensure_driver_initialized') and browser_tool._ensure_driver_initialized():
+                tools.add_tool(browser_tool)
+        
+        return tools.get_all_tools()
     
     def research(self, topic: str, depth: str = "comprehensive", tools: List[Any] = None) -> str:
         """
