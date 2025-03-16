@@ -1,7 +1,7 @@
 """Core functionality and configurations for the CrewAI Learning Project."""
 
 from .config import Config
-from .logger import logger, define_log_level
+from .logger import logger, get_logger
 from .exceptions import (
     CrewAILearningError, 
     ToolError, 
@@ -13,13 +13,9 @@ from .exceptions import (
     ValidationError
 )
 from .schema import (
-    Role,
-    AgentState,
     Message,
     Memory,
-    ToolCall,
-    ToolInput,
-    ToolOutput
+    TaskResult
 )
 
 __all__ = [
@@ -28,7 +24,7 @@ __all__ = [
     
     # Logger
     'logger',
-    'define_log_level',
+    'get_logger',
     
     # Exceptions
     'CrewAILearningError',
@@ -41,11 +37,7 @@ __all__ = [
     'ValidationError',
     
     # Schema
-    'Role',
-    'AgentState',
     'Message',
     'Memory',
-    'ToolCall',
-    'ToolInput',
-    'ToolOutput'
+    'TaskResult'
 ]
