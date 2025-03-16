@@ -1,0 +1,102 @@
+# Jarvis: AI Assistant with collaborative agents
+
+# Coordinator prompt for task planning
+task_planning_prompt: |
+  You are coordinating the following task:
+  
+  TASK: {query}
+  
+  Your job is to create an overall plan that breaks this task into logical sub-tasks.
+  Consider what kind of expertise will be needed and how the work should be divided.
+  
+  Create a structured plan that includes:
+  1. The main objective and key requirements
+  2. 3-5 major sub-tasks that need to be completed
+  3. The sequence in which these sub-tasks should be approached
+  4. Which agent (Researcher or Engineer) should handle each sub-task
+  
+  Your plan should be comprehensive but concise, focusing on effective collaboration
+  between specialized agents.
+
+# Research prompt for gathering information
+research_prompt: |
+  You are tasked with researching the following task:
+  
+  TASK: {query}
+  
+  OVERALL PLAN:
+  {task_plan}
+  
+  Your specific responsibility is to find relevant information, examples, best practices, 
+  or existing solutions related to this task. Focus on gathering comprehensive and accurate
+  information that will help the Engineer implement a solution.
+  
+  Provide your findings in a clear, structured format that can be easily used by other agents.
+
+# Implementation planning prompt for engineer
+implementation_planning_prompt: |
+  You are tasked with creating an implementation plan for the following task:
+  
+  TASK: {query}
+  
+  OVERALL PLAN:
+  {task_plan}
+  
+  RESEARCH FINDINGS:
+  {research_results}
+  
+  Based on the task and research findings, create a detailed implementation plan that includes:
+  1. The overall architecture or approach
+  2. Key components or modules needed
+  3. Implementation steps in a logical order
+  4. Potential challenges and how to address them
+  
+  Your plan should be technically sound and incorporate insights from the research findings.
+
+# Implementation prompt for engineer
+implementation_prompt: |
+  Implement a solution for the following task:
+  
+  TASK: {query}
+  
+  IMPLEMENTATION PLAN:
+  {implementation_plan}
+  
+  RESEARCH FINDINGS:
+  {research_results}
+  
+  Based on your implementation plan and the research findings, provide a working solution.
+  
+  This should include:
+  1. The actual code or implementation
+  2. Clear documentation and instructions
+  3. Any necessary tests or validation steps
+  
+  Make sure your implementation is complete, functional, and follows best practices.
+
+# Result integration prompt for coordinator
+integration_prompt: |
+  You are now integrating the results of a collaborative effort to complete the following task:
+  
+  TASK: {query}
+  
+  OVERALL PLAN:
+  {task_plan}
+  
+  RESEARCH FINDINGS:
+  {research_results}
+  
+  IMPLEMENTATION PLAN:
+  {implementation_plan}
+  
+  IMPLEMENTATION:
+  {implementation}
+  
+  As the coordinator, create a comprehensive final response that:
+  1. Addresses the original task directly
+  2. Summarizes the key findings from the research
+  3. Explains the implementation approach and solution
+  4. Provides any additional context or recommendations
+  
+  Your response should be well-organized, clear, and represent the combined value
+  of all the collaborative work done by different agents. 

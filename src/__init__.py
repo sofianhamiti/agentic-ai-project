@@ -8,7 +8,7 @@ implement autonomous AI agents working together to solve complex tasks.
 # Import submodules to make them available through src
 from . import agents
 from . import tools
-from . import flow
+# Removing flow import to avoid circular dependency
 from . import core
 from . import models
 
@@ -16,7 +16,6 @@ from . import models
 __all__ = [
     'agents',
     'tools',
-    'flow',
     'core',
     'models',
 ]

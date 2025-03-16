@@ -1,0 +1,87 @@
+# WebSearchAgent prompt configurations
+
+# Basic search prompt
+search_prompt: |
+  You are conducting a web search for the following query:
+  
+  QUERY: {query}
+  
+  Use the web search tool to gather relevant information. Focus on:
+  - Finding factual, up-to-date information
+  - Gathering information from diverse sources
+  - Prioritizing reliable sources
+  
+  Once you have enough information, provide a clear, concise synthesis of what you found.
+  Include key facts, insights, and any noteworthy points of disagreement between sources.
+
+# Question answering prompt
+question_prompt: |
+  You need to answer the following question using web search:
+  
+  QUESTION: {question}
+  
+  Use the web search tool to find accurate information. Your task is to:
+  1. Search for reliable information to answer the question
+  2. Verify facts from multiple sources when possible
+  3. Synthesize the information into a clear, direct answer
+  4. Include source information to support your answer
+  
+  Your answer should be thorough yet concise, focused specifically on answering the question.
+
+# In-depth research prompt
+research_prompt: |
+  You are researching the following topic:
+  
+  TOPIC: {topic}
+  DEPTH: {depth}
+  
+  Use web search to conduct {depth} research on this topic. Your research should:
+  1. Cover fundamental concepts and key information
+  2. Explore different perspectives and viewpoints
+  3. Identify trends, developments, and current state
+  4. Note areas of consensus and controversy
+  5. Find supporting examples and evidence
+  
+  Organize your findings into a structured report with clear sections.
+  Cite your sources and provide context for the information.
+  
+  For depth "basic": Focus on core concepts and general overview.
+  For depth "comprehensive": Include broader context and more specific details.
+  For depth "expert": Dive into technical aspects, nuances, and specialized information.
+
+# Synthesis prompt for creating a unified view from multiple searches
+synthesis_prompt: |
+  You need to synthesize information from multiple search results:
+  
+  {search_results}
+  
+  Create a concise synthesis that:
+  1. Identifies the key facts and information across all searches
+  2. Highlights points of agreement and consensus
+  3. Notes any contradictions or disagreements between sources
+  4. Organizes information in a logical, coherent structure
+  5. Prioritizes the most relevant information for a typical user
+  
+  Your synthesis should summarize the core findings without unnecessary repetition.
+  Focus on creating a comprehensive but clear overview of what the searches revealed.
+
+# Evaluation prompt for assessing search results
+evaluation_prompt: |
+  Evaluate whether the following search results adequately address this query:
+  
+  ORIGINAL QUERY: {query}
+  
+  SEARCH RESULTS:
+  {search_results}
+  
+  Your evaluation should:
+  1. Determine if all aspects of the query have been addressed
+  2. Identify any missing information or unanswered questions
+  3. Assess the reliability and comprehensiveness of the information
+  4. Note any contradictions or areas needing clarification
+  5. Recommend specific additional searches if needed
+  
+  Provide a clear assessment on whether:
+  A) The results are complete and ready to be presented to the user
+  B) Additional specific searches are needed (specify what to search)
+  C) Clarification is needed from the user (specify what to ask) 

@@ -1,0 +1,133 @@
+# CoordinatorAgent prompt configurations
+
+# General task planning prompt
+planning_prompt: |
+  You are tasked with creating a detailed plan for the following task:
+  
+  TASK: {query}
+  
+  Create a comprehensive plan that includes:
+  1. The main goal and key objectives
+  2. Required information or resources
+  3. Major steps needed to complete the task
+  4. Potential challenges and contingency plans
+  5. Success criteria for evaluating the final result
+  
+  Your plan should be well-structured, logically sequenced, and thorough.
+
+# Research prompt for gathering information
+research_prompt: |
+  You are tasked with researching the following topic:
+  
+  TOPIC: {query}
+  
+  Conduct thorough research and provide comprehensive information about this topic.
+  
+  Your research should:
+  1. Cover key concepts, definitions, and background
+  2. Include different perspectives and approaches
+  3. Cite specific sources, examples, and evidence
+  4. Address potential questions or areas of confusion
+  5. Organize information in a logical, easy-to-follow structure
+  
+  Aim for depth, accuracy, and completeness in your research.
+
+# Verification prompt for quality assurance
+verification_prompt: |
+  You are verifying whether the following results satisfy the original requirements:
+  
+  ORIGINAL TASK: {query}
+  
+  RESULTS: 
+  {results}
+  
+  Conduct a thorough verification by:
+  1. Comparing results against the original requirements
+  2. Checking for completeness and accuracy
+  3. Identifying any missing elements or areas for improvement
+  4. Assessing overall quality and effectiveness
+  
+  Provide a clear assessment of whether the results meet the requirements,
+  with specific feedback on strengths and areas for improvement.
+
+# User interaction prompt for clarification
+clarification_prompt: |
+  You need to clarify the following user request:
+  
+  USER REQUEST: {query}
+  
+  Based on this request, determine what clarifications are needed to provide
+  the best possible answer. Consider:
+  
+  1. Ambiguous terms or concepts that need definition
+  2. Missing context or background information
+  3. The level of detail required in the response
+  4. Specific preferences or constraints
+  5. The intended use of the information
+  
+  Formulate clear, concise questions that will help you understand
+  exactly what the user needs.
+
+# Web search coordination prompt
+web_search_coordination_prompt: |
+  You need to coordinate a web search for the following user query:
+  
+  USER QUERY: {query}
+  
+  USER CLARIFICATIONS: {clarifications}
+  
+  Based on this information, create effective search instructions for the WebSearchAgent:
+  
+  1. Break down complex queries into smaller, focused search queries
+  2. Identify 3-5 keywords for each search query in Google search style
+  3. Specify which aspects to search separately (multiple attributes of single entities)
+  4. Indicate what information to validate across multiple sources
+  5. Prioritize the search order (from general to specific, or most important first)
+  
+  Create clear, specific instructions that will help gather comprehensive
+  and accurate information to answer the user's query.
+
+# Search results evaluation prompt
+search_results_evaluation_prompt: |
+  You have received the following search results from the WebSearchAgent:
+  
+  ORIGINAL QUERY: {query}
+  
+  SEARCH RESULTS:
+  {search_results}
+  
+  Evaluate these results to determine if they fully address the user's query:
+  
+  1. Check if all aspects of the query have been answered
+  2. Assess the completeness and accuracy of the information
+  3. Identify any inconsistencies or conflicting information
+  4. Determine if additional searches are needed for missing information
+  5. Consider if the information needs to be verified from additional sources
+  
+  Provide your assessment on whether:
+  A) The results are complete and ready to be presented to the user
+  B) Additional specific searches are needed (specify what to search)
+  C) Clarification is needed from the user (specify what to ask)
+
+# Final response formulation prompt
+final_response_prompt: |
+  You need to create a final response to the user based on all gathered information:
+  
+  ORIGINAL QUERY: {query}
+  
+  USER CLARIFICATIONS: {clarifications}
+  
+  SEARCH RESULTS:
+  {search_results}
+  
+  Formulate a comprehensive, well-structured response that:
+  
+  1. Directly addresses the user's original query and any clarifications
+  2. Presents information in a logical, easy-to-follow structure
+  3. Highlights the most important facts and insights
+  4. Acknowledges any limitations or uncertainties in the information
+  5. Cites sources or references when appropriate
+  
+  Your response should be helpful, accurate, and appropriately detailed
+  for the user's needs. Focus on providing genuine value rather than
+  just restating the search results. 

@@ -23,9 +23,13 @@ WORKDIR /app
 
 # Copy README.md and pyproject.toml for dependency installation
 COPY README.md pyproject.toml ./
+COPY requirements.txt ./
 
 # Install the project in editable mode
 RUN pip install --no-cache-dir -e .
+
+# Install specific requirements
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
 COPY . .

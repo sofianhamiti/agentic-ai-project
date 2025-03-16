@@ -1,46 +1,57 @@
-import os
-from typing import Dict, Any
-import boto3
-from crewai import LLM
+"""
+AWS Bedrock LLM integration.
 
-class BedrockModel:
-    """Implementation of Bedrock model integration."""
+This module handles the creation and configuration of AWS Bedrock LLM instances.
+"""
+
+from typing import Dict, Any, Optional
+from pydantic import BaseModel, Field
+from langchain_aws import BedrockLLM, ChatBedrock
+
+
+class BedrockSettings(BaseModel):
+    """Bedrock configuration settings."""
     
-    def __init__(self, config: Dict[str, Any]):
-        """Initialize the Bedrock model with configuration."""
-        self.validate_config(config)
-        self.config = config
-        self._setup_aws()
+    model_name: str = Field(..., description="Bedrock model name to use")
+    temperature: float = Field(0.7, description="Sampling temperature")
+    max_tokens: int = Field(4096, description="Maximum tokens per response")
+    region: str = Field("us-west-2", description="AWS region for Bedrock")
+
+
+def create_bedrock_llm(config: Dict[str, Any]):
+    """
+    Create a LangChain LLM instance for AWS Bedrock.
+    
+    Args:
+        config: LLM configuration dictionary
         
-    def _setup_aws(self) -> None:
-        """Set up AWS configuration."""
-        region = self.config.get('region', 'us-west-2')
-        boto3.setup_default_session(region_name=region)
+    Returns:
+        A configured AWS Bedrock LLM instance
+    """
+    # Get parameters
+    model_name = config.get("model_name")
+    region = config.get("region", "us-west-2")
+    temperature = config.get("temperature", 0.7)
+    max_tokens = config.get("max_tokens", 4096)
     
-    def get_llm(self) -> LLM:
-        """Get a configured Bedrock LLM instance."""
-        return LLM(
-            model=f"bedrock/{self.config['model_name']}",
-            temperature=self.config.get('temperature', 0.7)
+    # Model kwargs with parameters
+    model_kwargs = {
+        "temperature": temperature,
+        "max_tokens": max_tokens
+    }
+    
+    # Choose the right model class based on model name
+    is_claude_v3 = "claude-3" in model_name.lower()
+    
+    if is_claude_v3:
+        return ChatBedrock(
+            model_id=model_name,
+            region_name=region,
+            model_kwargs=model_kwargs
         )
-    
-    def validate_config(self, config: Dict[str, Any]) -> None:
-        """Validate the Bedrock configuration."""
-        if not config.get('model_name'):
-            raise ValueError("model_name is required for Bedrock configuration")
-        
-        if not config.get('region'):
-            raise ValueError("AWS region is required for Bedrock configuration")
-        
-        # Validate AWS credentials are available using boto3 session
-        try:
-            session = boto3.Session()
-            credentials = session.get_credentials()
-            if not credentials:
-                raise ValueError("No AWS credentials found")
-        except Exception as e:
-            raise ValueError(
-                f"AWS credentials validation failed: {str(e)}. "
-                "Ensure credentials are available via ~/.aws/credentials, "
-                "environment variables, or instance profile."
-            ) 
+    else:
+        return BedrockLLM(
+            model_id=model_name,
+            region_name=region,
+            model_kwargs=model_kwargs
+        ) 

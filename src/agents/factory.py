@@ -1,49 +1,58 @@
-from typing import Optional
+"""
+Factory for creating agent instances.
+
+This module provides a factory class for instantiating different types of agents.
+"""
+
+from typing import Dict, Type, Optional
 from .base_agent import BaseAgent
+from .coordinator_agent import CoordinatorAgent
 from ..core.config import Config
 
+
 class AgentFactory:
-    """Factory for creating various types of agents."""
+    """
+    Factory for creating different types of agents.
     
-    @staticmethod
-    def create_agent(agent_type: str, config: Config = None, verbose: bool = False) -> BaseAgent:
+    This factory makes it easy to instantiate agents by name without directly
+    importing their classes.
+    """
+    
+    # Registry of available agent types
+    _registry: Dict[str, Type[BaseAgent]] = {
+        "coordinator": CoordinatorAgent,
+    }
+    
+    @classmethod
+    def create(cls, agent_type: str, config: Optional[Config] = None, verbose: bool = False) -> BaseAgent:
         """
-        Create an agent of the specified type.
+        Create an agent instance by type name.
         
         Args:
-            agent_type: Type of agent to create ("swe", "planning", "browser", etc.)
-            config: Configuration object (optional)
-            verbose: Whether the agent should output verbose logs
+            agent_type: The type of agent to create (coordinator)
+            config: Optional configuration for the agent
+            verbose: Whether to enable verbose output
             
         Returns:
-            An instance of the requested agent type
+            An instantiated agent of the requested type
             
         Raises:
-            ValueError: If the agent type is unknown
+            ValueError: If the requested agent type is not found in the registry
         """
-        # If config is None, create a new Config instance
-        if config is None:
-            config = Config()
-            
-        if agent_type == "swe":
-            from .swe_agent import SWEAgent
-            return SWEAgent(config, verbose=verbose)
-        elif agent_type == "planning":
-            from .planning_agent import PlanningAgent
-            return PlanningAgent(config, verbose=verbose)
-        elif agent_type == "browser":
-            from .browser_agent import BrowserAgent
-            return BrowserAgent(config, verbose=verbose)
-        elif agent_type == "researcher":
-            from .researcher_agent import ResearcherAgent
-            return ResearcherAgent(config, verbose=verbose)
-        elif agent_type == "main_agent":
-            from .main_agent import MainAgent
-            return MainAgent(config, verbose=verbose)
-        else:
-            raise ValueError(f"Unknown agent type: {agent_type}")
-    
-    @staticmethod
-    def list_available_agents() -> list[str]:
-        """List all available agent types."""
-        return ["swe", "planning", "browser", "researcher", "main_agent"] 
+        if agent_type not in cls._registry:
+            raise ValueError(f"Unknown agent type: {agent_type}. Available types are: {list(cls._registry.keys())}")
+        
+        agent_class = cls._registry[agent_type]
+        return agent_class(config=config, verbose=verbose)
+
+    @classmethod
+    def get_available_agent_types(cls) -> Dict[str, str]:
+        """
+        Get the available agent types.
+        
+        Returns:
+            A dictionary mapping agent types to their descriptions.
+        """
+        return {
+            "coordinator": "Versatile agent with multiple tools for diverse tasks",
+        } 

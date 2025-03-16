@@ -1,3 +1,7 @@
-from .bedrock import BedrockModel
+"""
+Models package for Bedrock LLM integration.
+"""
 
-__all__ = ['BedrockModel'] 
+from .bedrock import create_bedrock_llm, BedrockSettings
+
+__all__ = ["create_bedrock_llm", "BedrockSettings"] 

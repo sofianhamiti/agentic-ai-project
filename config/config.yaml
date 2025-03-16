@@ -1,8 +1,7 @@
 llm:
-  provider: "bedrock"  # Options: bedrock, openai
   model_name: "anthropic.claude-3-5-sonnet-20241022-v2:0" 
   temperature: 0.7
-  max_tokens: 4096
+  max_tokens: 200000
   region: "us-west-2"  # AWS region for Bedrock
 
 tools:
@@ -10,10 +9,13 @@ tools:
     enabled: true
     max_results: 5
     preferred_engine: "duckduckgo"  # Options: duckduckgo, google
-  web_browser:
-    enabled: true
-    timeout: 30
 
 logging:
   level: "INFO"
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s" 
+
+# Memory and persistence configuration
+memory:
+  # Directory for storing agent outputs, files and data
+  output_dir: "/tmp/jarvis"  # In Docker
+  local_output_dir: "./output"  # For local execution 

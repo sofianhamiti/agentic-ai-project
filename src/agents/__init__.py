@@ -1,18 +1,15 @@
-from .base_agent import BaseAgent
-from .swe_agent import SWEAgent
-from .planning_agent import PlanningAgent
-from .browser_agent import BrowserAgent
-from .researcher_agent import ResearcherAgent
-from .main_agent import MainAgent
-from .factory import AgentFactory
+"""
+Agent module for the AI system.
 
-# Export all agents
+This module provides different agent implementations for specialized tasks.
+"""
+
+from .base_agent import BaseAgent
+from .coordinator_agent import CoordinatorAgent
+from .web_search_agent import WebSearchAgent
+
 __all__ = [
-    'BaseAgent',
-    'SWEAgent',
-    'PlanningAgent',
-    'BrowserAgent',
-    'ResearcherAgent',
-    'MainAgent',
-    'AgentFactory',
+    "BaseAgent",
+    "CoordinatorAgent",
+    "WebSearchAgent"
 ]
