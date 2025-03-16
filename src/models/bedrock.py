@@ -32,12 +32,15 @@ class BedrockModel:
         if not config.get('region'):
             raise ValueError("AWS region is required for Bedrock configuration")
         
-        # Validate AWS credentials are available
-        if not (os.getenv('AWS_ACCESS_KEY_ID') and 
-                os.getenv('AWS_SECRET_ACCESS_KEY') or 
-                os.getenv('AWS_PROFILE')):
+        # Validate AWS credentials are available using boto3 session
+        try:
+            session = boto3.Session()
+            credentials = session.get_credentials()
+            if not credentials:
+                raise ValueError("No AWS credentials found")
+        except Exception as e:
             raise ValueError(
-                "AWS credentials must be configured either through environment "
-                "variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY) or "
-                "AWS_PROFILE"
+                f"AWS credentials validation failed: {str(e)}. "
+                "Ensure credentials are available via ~/.aws/credentials, "
+                "environment variables, or instance profile."
             ) 

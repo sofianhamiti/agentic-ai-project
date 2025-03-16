@@ -1,9 +1,16 @@
 import asyncio
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Optional
+from pydantic import Field
+from crewai import Agent
 from .base_agent import BaseAgent
 from ..core.config import Config
 from ..tools.browser import BrowserUseTool
 from ..tools.web_search import WebSearchTool
+from ..tools.factory import ToolFactory
+from ..core.schema import Message, Memory
+from ..core.logger import get_logger
+
+logger = get_logger(__name__)
 
 class BrowserAgent(BaseAgent):
     """
@@ -13,20 +20,88 @@ class BrowserAgent(BaseAgent):
     
     def __init__(
         self,
-        config: Config,
-        verbose: bool = False
+        name: str = "Browser Agent",
+        role: str = "Web Automation Expert",
+        goal: str = "Navigate websites and automate browser interactions",
+        backstory: str = "I am a browser automation expert who can navigate websites, interact with web elements, and extract information effectively.",
+        verbose: bool = False,
+        allow_delegation: bool = True,
+        memory: Optional[List[Memory]] = None,
+        **kwargs
     ):
-        """Initialize the Browser agent."""
+        """
+        Initialize the browser agent.
+        
+        Args:
+            name: The name of the agent
+            role: The role of the agent
+            goal: The goal of the agent
+            backstory: The backstory of the agent
+            verbose: Whether to enable verbose logging
+            allow_delegation: Whether to allow delegation to other agents
+            memory: Optional list of memory items to initialize agent memory
+            **kwargs: Additional arguments to pass to the agent constructor
+        """
         super().__init__(
-            config=config,
-            role="Web Browser Expert",
-            goal="Navigate and interact with websites to gather information and perform web tasks",
-            backstory="""You are an expert at navigating the web and extracting information from websites. 
-            You know how to efficiently browse websites, interact with web elements, and extract 
-            the most relevant information. You're skilled at automating web tasks and can work 
-            with various web interfaces effectively.""",
-            verbose=verbose
+            name=name,
+            role=role,
+            goal=goal,
+            backstory=backstory,
+            verbose=verbose,
+            allow_delegation=allow_delegation,
+            **kwargs
         )
+        
+        # Initialize agent memory
+        self._memory = memory or []
+        logger.info(f"Initialized {name} with {len(self._memory)} memory items")
+    
+    def create_agent(self) -> Agent:
+        """Create the browser agent with appropriate tools."""
+        tools = self._get_tools()
+        
+        return Agent(
+            name=self.name,
+            role=self.role,
+            goal=self.goal,
+            backstory=self.backstory,
+            verbose=self.verbose,
+            allow_delegation=self.allow_delegation,
+            tools=tools,
+            **self.kwargs
+        )
+    
+    def _get_tools(self) -> List[Any]:
+        """Get the tools for the browser agent."""
+        return [
+            ToolFactory.create_tool("browser"),
+            ToolFactory.create_tool("web_search"),
+            ToolFactory.create_tool("terminal")
+        ]
+    
+    def remember(self, content: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        """
+        Add a memory item to the agent's memory.
+        
+        Args:
+            content: The content of the memory
+            metadata: Optional metadata for the memory
+        """
+        memory_item = Memory(
+            content=content,
+            metadata=metadata or {}
+        )
+        self._memory.append(memory_item)
+        logger.debug(f"Added memory: {content[:50]}...")
+    
+    def get_memories(self) -> List[Memory]:
+        """
+        Get all memory items.
+        
+        Returns:
+            List of memory items
+        """
+        return self._memory
         
     def get_tools(self) -> List[Any]:
         """Get the tools available to this agent."""

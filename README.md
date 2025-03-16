@@ -17,7 +17,6 @@ crewai_learning/
 │   ├── agents/          # Agent definitions including specialized agents
 │   │   ├── base_agent.py       # Base agent implementation
 │   │   ├── browser_agent.py    # Web browsing agent
-│   │   ├── email_reviewer_agent.py # Email analysis agent
 │   │   ├── planning_agent.py   # Planning and task agent
 │   │   ├── researcher_agent.py # Research-focused agent
 │   │   └── swe_agent.py        # Software engineering agent
@@ -29,7 +28,6 @@ crewai_learning/
 │       ├── base.py             # Base tool class
 │       ├── bash.py             # Bash command execution
 │       ├── browser.py          # Browser automation
-│       ├── email_analysis.py   # Email review tools
 │       ├── file_saver.py       # File I/O operations
 │       ├── planning.py         # Planning tools
 │       ├── python_executor.py  # Python code execution
@@ -91,7 +89,6 @@ config = Config.from_yaml()
 
 # Create agents using factory
 researcher = AgentFactory.create_agent("researcher", config=config)
-email_reviewer = AgentFactory.create_agent("email_reviewer", config=config)
 
 # Create tools
 web_search_tool = ToolFactory.create_tool("web_search")
@@ -99,17 +96,7 @@ web_search_tool = ToolFactory.create_tool("web_search")
 # Execute tasks with agents
 research_results = researcher.research("Latest AI advancements in 2024", 
                                       tools=[web_search_tool])
-
-email_content = """
-Subject: Project Update
-Hi Team,
-Quick update on the AI integration project. We're behind schedule but should catch up soon.
-Thanks,
-Alex
-"""
-
-email_feedback = email_reviewer.review_email(email_content)
-print(email_feedback)
+print(research_results)
 ```
 
 ## License
@@ -120,3 +107,23 @@ MIT License - see LICENSE file for details.
 
 - Built with [CrewAI](https://github.com/joaomdmoura/crewAI)
 - Powered by AWS Bedrock
+
+## Recent Improvements
+
+### Consistent Error Handling
+We've implemented a standardized exception hierarchy to improve error handling throughout the codebase:
+- All exceptions inherit from `CrewAILearningError`
+- Specialized exceptions for different components (Agent, Tool, Config, etc.)
+- Rich context information with each exception
+
+### Standardized Schema Usage
+We've added Pydantic models for consistent data structures:
+- `Message` model for agent communication
+- `Memory` model for agent memory management
+- `TaskResult` model for standardized operation results
+
+### Basic Testing Infrastructure
+We've added a basic testing framework:
+- Unit tests for core components like the `Config` class
+- Mock-based testing for configuration functionality
+- Easy to extend for more comprehensive testing

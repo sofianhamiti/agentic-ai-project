@@ -29,7 +29,7 @@ class ResearcherAgent(BaseAgent):
             WebSearchTool()
         ]
     
-    async def research(self, topic: str, depth: str = "medium") -> str:
+    def research(self, topic: str, depth: str = "medium") -> str:
         """
         Conduct research on a given topic.
         
@@ -56,4 +56,4 @@ class ResearcherAgent(BaseAgent):
         Organize your findings in a clear, structured format.
         """
         
-        return await self.execute_task(task) 
+        return self.execute_task(task) 

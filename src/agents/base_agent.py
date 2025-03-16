@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from crewai import Agent
+from crewai import Agent, Task, Crew, Process
 from ..core.config import Config
 
 class BaseAgent:
@@ -31,9 +31,27 @@ class BaseAgent:
             llm=self.config.get_llm()  # Use the LLM from config
         )
     
-    async def execute_task(self, task: str) -> str:
-        """Execute a task."""
-        return await self._agent.run(task)
+    def execute_task(self, task_description: str, tools: List[Any] = None) -> str:
+        """Execute a task using a Task object and Crew."""
+        # Create a task with the agent
+        task = Task(
+            description=task_description,
+            expected_output="Detailed response to the task",
+            agent=self._agent,
+            tools=tools if tools is not None else self.get_tools()
+        )
+        
+        # Create a simple crew with just this agent and task
+        crew = Crew(
+            agents=[self._agent],
+            tasks=[task],
+            process=Process.sequential,
+            verbose=self.verbose
+        )
+        
+        # Execute the task and return the result
+        result = crew.kickoff()
+        return result
     
     def get_tools(self) -> List[Any]:
         """Get the list of tools available to this agent."""

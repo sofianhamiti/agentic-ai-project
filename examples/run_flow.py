@@ -1,4 +1,3 @@
-import asyncio
 import time
 import os
 import sys
@@ -10,7 +9,7 @@ from src.core.config import Config
 from src.agents import AgentFactory
 
 
-async def run_flow():
+def run_flow():
     """Main entry point for running agent flows based on user input."""
     # Initialize configuration
     config = Config.from_yaml()
@@ -46,17 +45,14 @@ async def run_flow():
         # Execute agent task with timeout
         try:
             start_time = time.time()
-            result = await asyncio.wait_for(
-                agent.execute_task(prompt),
-                timeout=1800,  # 30 minute timeout
-            )
+            result = agent.execute_task(prompt)
             elapsed_time = time.time() - start_time
             print(f"Request processed in {elapsed_time:.2f} seconds")
             print("\nResult:")
             print(result)
-        except asyncio.TimeoutError:
-            print("Request processing timed out after 30 minutes")
-            print("Operation terminated due to timeout. Please try a simpler request.")
+        except KeyboardInterrupt:
+            print("Request processing timed out or was interrupted")
+            print("Operation terminated. Please try a simpler request.")
             
     except KeyboardInterrupt:
         print("Operation cancelled by user.")
@@ -67,4 +63,4 @@ async def run_flow():
 
 
 if __name__ == "__main__":
-    asyncio.run(run_flow()) 
+    run_flow() 

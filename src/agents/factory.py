@@ -6,13 +6,13 @@ class AgentFactory:
     """Factory for creating various types of agents."""
     
     @staticmethod
-    def create_agent(agent_type: str, config: Config, verbose: bool = False) -> BaseAgent:
+    def create_agent(agent_type: str, config: Config = None, verbose: bool = False) -> BaseAgent:
         """
         Create an agent of the specified type.
         
         Args:
             agent_type: Type of agent to create ("swe", "planning", "browser", etc.)
-            config: Configuration object
+            config: Configuration object (optional)
             verbose: Whether the agent should output verbose logs
             
         Returns:
@@ -30,16 +30,16 @@ class AgentFactory:
         elif agent_type == "browser":
             from .browser_agent import BrowserAgent
             return BrowserAgent(config, verbose=verbose)
-        elif agent_type == "email":
-            from .email_reviewer_agent import EmailReviewerAgent
-            return EmailReviewerAgent(config, verbose=verbose)
         elif agent_type == "researcher":
             from .researcher_agent import ResearcherAgent
             return ResearcherAgent(config, verbose=verbose)
+        elif agent_type == "main_agent":
+            from .main_agent import MainAgent
+            return MainAgent(config, verbose=verbose)
         else:
             raise ValueError(f"Unknown agent type: {agent_type}")
     
     @staticmethod
     def list_available_agents() -> list[str]:
         """List all available agent types."""
-        return ["swe", "planning", "browser", "email", "researcher"] 
+        return ["swe", "planning", "browser", "researcher", "main_agent"] 
